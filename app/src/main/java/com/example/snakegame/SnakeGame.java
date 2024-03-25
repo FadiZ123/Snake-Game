@@ -3,6 +3,8 @@ package com.example.snakegame;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -48,11 +50,17 @@ class SnakeGame extends SurfaceView implements Runnable{
     // And an apple
     private Apple mApple;
 
+    private Bitmap pauseImage;
+    private Bitmap resumeImage;
+
 
     // This is the constructor method that gets called
     // from SnakeActivity
     public SnakeGame(Context context, Point size) {
         super(context);
+
+        pauseImage = BitmapFactory.decodeResource(getResources(), R.drawable.pausebutton);
+        resumeImage = BitmapFactory.decodeResource(getResources(), R.drawable.playbutton);
 
         // Work out how many pixels each block is
         int blockSize = size.x / NUM_BLOCKS_WIDE;
@@ -214,6 +222,23 @@ class SnakeGame extends SurfaceView implements Runnable{
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
 
+            // Dimensions of the screen
+            int screenWidth = 1080;
+            int screenHeight = 2220;
+
+            // Switch between the two pause and resume images
+            Bitmap buttonImage = (mPaused) ? resumeImage : pauseImage;
+
+            // Get width and height of the images
+            int buttonImageWidth = pauseImage.getWidth();
+            int buttonImageHeight = resumeImage.getHeight();
+
+            int x = screenWidth - buttonImageWidth;
+            int y = 0;
+
+            // Draw the image on the screen
+            mCanvas.drawBitmap(buttonImage, x, y, null);
+
             // Draw some text while paused
             if(mPaused){
 
@@ -237,6 +262,22 @@ class SnakeGame extends SurfaceView implements Runnable{
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
+        float touchX = motionEvent.getX();
+        float touchY = motionEvent.getY();
+
+        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            if (isButtonClicked(touchX, touchY)) {
+                // Toggle the game state between paused and resumed
+                mPaused = !mPaused;
+
+                if (mPaused) {
+                    // If the game is paused, stop the snake movement
+                    pauseGame();
+                }
+                return true;
+            }
+        }
+
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_UP:
                 if (mPaused) {
@@ -249,13 +290,29 @@ class SnakeGame extends SurfaceView implements Runnable{
 
                 // Let the Snake class handle the input
                 mSnake.switchHeading(motionEvent);
-                break;
 
             default:
                 break;
 
         }
         return true;
+
+    }
+
+    private boolean isButtonClicked(float touchX, float touchY) {
+        int screenWidth = 1080;
+        int screenHeight = 2220;
+        int buttonWidth = pauseImage.getWidth();
+        int buttonHeight = resumeImage.getHeight();
+
+        // Define the bounds of where the button can be clicked
+        int buttonLeft = screenWidth - buttonWidth;
+        int buttonTop = 0;
+        int buttonRight = buttonLeft + buttonWidth ;
+        int buttonBottom = buttonTop + buttonHeight;
+
+        // Check if the touch coordinates are within the button bounds
+        return touchX >= buttonLeft && touchX <= buttonRight && touchY >= buttonTop && touchY <= buttonBottom;
     }
 
 
