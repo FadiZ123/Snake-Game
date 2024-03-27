@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-class Snake extends GameObject {
+class Snake extends GameObject implements Drawable, Movable {
 
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
@@ -127,8 +127,8 @@ class Snake extends GameObject {
         segmentLocations.add(new Point(w / 2, h / 2));
     }
 
-
-    void move() {
+    @Override
+    public void move() {
         int deltaX = 0, deltaY = 0;
 
         // Move the body
