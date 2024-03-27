@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-class Snake {
+class Snake extends GameObject {
 
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
@@ -45,6 +45,7 @@ class Snake {
 
 
     Snake(Context context, Point mr, int ss) {
+        super(context, mr, ss);
 
         // Initialize our ArrayList
         segmentLocations = new ArrayList<>();
@@ -128,6 +129,8 @@ class Snake {
 
 
     void move() {
+        int deltaX = 0, deltaY = 0;
+
         // Move the body
         // Start at the back and move it
         // to the position of the segment in front of it
@@ -142,6 +145,7 @@ class Snake {
         // Move the head in the appropriate heading
         // Get the existing head position
         Point p = segmentLocations.get(0);
+        move(p, deltaX, deltaY);
 
         // Move it appropriately
         switch (heading) {
@@ -164,29 +168,44 @@ class Snake {
 
     }
 
-    boolean detectDeath() {
-        // Has the snake died?
-        boolean dead = false;
+    // Overloaded move method to specify direction snake is moving
+    void move(Point point, int deltaX, int deltaY) {
+        // Update the position of the head based on the given deltaX and deltaY
+        point.x += deltaX;
+        point.y += deltaY;
+    }
 
-        // Hit any of the screen edges
-        if (segmentLocations.get(0).x == -1 ||
+    // Overloaded detectDeath method, it checks if the snake has collided with the game boundaries or itself
+    boolean detectDeath() {
+        // Check for collision with game boundaries
+        boolean boundaryCollision = detectBoundaryCollision();
+
+        // Check for collision with the snake itself
+        boolean selfCollision = detectSelfCollision();
+
+        // Return true if there is either a boundary collision or self collision
+        return boundaryCollision || selfCollision;
+    }
+
+    private boolean detectBoundaryCollision() {
+        // Has the snake hit any of the screen edges?
+        return segmentLocations.get(0).x == -1 ||
                 segmentLocations.get(0).x > mMoveRange.x ||
                 segmentLocations.get(0).y == -1 ||
-                segmentLocations.get(0).y > mMoveRange.y) {
+                segmentLocations.get(0).y > mMoveRange.y;
+    }
 
-            dead = true;
-        }
-
-        // Eaten itself?
+    // Method to check for collision with the snake itself
+    private boolean detectSelfCollision() {
+        // Has the snake eaten itself?
         for (int i = segmentLocations.size() - 1; i > 0; i--) {
-            // Have any of the sections collided with the head
+            // Check if any segment collides with the head
             if (segmentLocations.get(0).x == segmentLocations.get(i).x &&
                     segmentLocations.get(0).y == segmentLocations.get(i).y) {
-
-                dead = true;
+                return true; // Collision detected
             }
         }
-        return dead;
+        return false; // No collision detected
     }
 
     boolean checkDinner(Point l) {
@@ -205,7 +224,8 @@ class Snake {
         return false;
     }
 
-    void draw(Canvas canvas, Paint paint) {
+    @Override
+    public void draw(Canvas canvas, Paint paint) {
 
         // Don't run this code if ArrayList has nothing in it
         if (!segmentLocations.isEmpty()) {

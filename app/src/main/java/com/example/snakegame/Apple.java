@@ -8,7 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import java.util.Random;
 
-class Apple {
+class Apple extends GameObject {
 
     // The location of the apple on the grid
     // Not in pixels
@@ -24,6 +24,7 @@ class Apple {
 
     /// Set up the apple in the constructor
     Apple(Context context, Point sr, int s){
+        super(context, sr, s);
 
         // Make a note of the passed in spawn range
         mSpawnRange = sr;
@@ -47,14 +48,21 @@ class Apple {
         location.y = random.nextInt(mSpawnRange.y - 1) + 1;
     }
 
+    // Overloaded spawn method, spawns apple at a specified coordinates
+    void spawn(int x, int y) {
+        location.x = x;
+        location.y = y;
+    }
+
     // Let SnakeGame know where the apple is
     // SnakeGame can share this with the snake
-    Point getLocation(){
+    public Point getLocation(){
         return location;
     }
 
+    @Override
     // Draw the apple
-    void draw(Canvas canvas, Paint paint){
+    public void draw(Canvas canvas, Paint paint){
         canvas.drawBitmap(mBitmapApple,
                 location.x * mSize, location.y * mSize, paint);
 
