@@ -316,5 +316,42 @@ class Snake extends GameObject implements Drawable, Movable {
             }
         }
     }
+
+    // Getters and setters for private fields
+    public ArrayList<Point> getSegmentLocations() {
+        return segmentLocations;
+    }
+
+    public int getSegmentSize() {
+        return mSegmentSize;
+    }
+
+    public void setSegmentSize(int segmentSize) {
+        this.mSegmentSize = segmentSize;
+    }
+
+    public Point getMoveRange() {
+        return mMoveRange;
+    }
+
+    public void setMoveRange(Point moveRange) {
+        this.mMoveRange = moveRange;
+    }
+
+    public int getHalfWayPoint() {
+        return halfWayPoint;
+    }
+
+    public void setHalfWayPoint(int halfWayPoint) {
+        this.halfWayPoint = halfWayPoint;
+    }
+
+    public Heading getHeading() {
+        return heading;
+    }
+
+    public void setHeading(Heading heading) {
+        this.heading = heading;
+    }
 }
 

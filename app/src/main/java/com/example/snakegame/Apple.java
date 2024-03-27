@@ -56,9 +56,6 @@ class Apple extends GameObject implements Drawable {
 
     // Let SnakeGame know where the apple is
     // SnakeGame can share this with the snake
-    public Point getLocation(){
-        return location;
-    }
 
     @Override
     // Draw the apple
@@ -66,6 +63,31 @@ class Apple extends GameObject implements Drawable {
         canvas.drawBitmap(mBitmapApple,
                 location.x * mSize, location.y * mSize, paint);
 
+    }
+
+    //  Getters and setters for private fields
+    public Point getLocation() {
+        return location;
+    }
+
+    public void setLocation(Point location) {
+        this.location = location;
+    }
+
+    public Point getSpawnRange() {
+        return mSpawnRange;
+    }
+
+    public void setSpawnRange(Point spawnRange) {
+        mSpawnRange = spawnRange;
+    }
+
+    public int getSize() {
+        return mSize;
+    }
+
+    public void setSize(int size) {
+        mSize = size;
     }
 
 }
