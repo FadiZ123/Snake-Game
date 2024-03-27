@@ -42,21 +42,19 @@ class Apple extends GameObject implements Drawable {
 
     // This is called every time an apple is eaten
     void spawn(){
-        // Choose two random values and place the apple
-        Random random = new Random();
-        location.x = random.nextInt(mSpawnRange.x) + 1;
-        location.y = random.nextInt(mSpawnRange.y - 1) + 1;
+        location = generateRandomCoordinates();
     }
 
-    // Overloaded spawn method, spawns apple at a specified coordinates
-    void spawn(int x, int y) {
-        location.x = x;
-        location.y = y;
+    private Point generateRandomCoordinates() {
+        // Choose two random values and place the apple
+        Random random = new Random();
+        int x = random.nextInt(mSpawnRange.x) + 1;
+        int y = random.nextInt(mSpawnRange.y - 1) + 1;
+        return new Point(x, y);
     }
 
     // Let SnakeGame know where the apple is
     // SnakeGame can share this with the snake
-
     @Override
     // Draw the apple
     public void draw(Canvas canvas, Paint paint){
