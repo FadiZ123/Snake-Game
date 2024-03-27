@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -209,14 +210,19 @@ class SnakeGame extends SurfaceView implements Runnable{
             mCanvas = mSurfaceHolder.lockCanvas();
 
             // Fill the screen with a color
-            mCanvas.drawColor(Color.argb(255, 26, 128, 182));
+            mCanvas.drawColor(Color.argb(255, 100, 140, 70));
 
             // Set the size and color of the mPaint for the text
             mPaint.setColor(Color.argb(255, 255, 255, 255));
             mPaint.setTextSize(120);
 
+            // Set a custom font
+            Typeface customTypeface = Typeface.createFromAsset(getContext().getAssets(), "ShiftyNotesRegular-BWZ6d.ttf");
+            mPaint.setTypeface(null);
+
             // Draw the score
             mCanvas.drawText("" + mScore, 20, 120, mPaint);
+
 
             // Draw the apple and the snake
             mApple.draw(mCanvas, mPaint);
@@ -225,6 +231,9 @@ class SnakeGame extends SurfaceView implements Runnable{
             // Dimensions of the screen
             int screenWidth = 1080;
             int screenHeight = 2220;
+
+            int screenWidthText =  mCanvas.getWidth();;
+            int screenHeightText =  mCanvas.getHeight();;
 
             // Switch between the two pause and resume images
             Bitmap buttonImage = (mPaused) ? resumeImage : pauseImage;
@@ -239,21 +248,30 @@ class SnakeGame extends SurfaceView implements Runnable{
             // Draw the image on the screen
             mCanvas.drawBitmap(buttonImage, x, y, null);
 
+            // Draw names on the bottom right corner
+            mPaint.setTypeface(customTypeface);
+            String name1 = "Fadi Zubeideh";
+            String name2 = "Ganesh Renukunta";
+            float textWidth1 = mPaint.measureText(name1);
+            float textWidth2 = mPaint.measureText(name2);
+            float textHeight = mPaint.getFontMetrics().bottom - mPaint.getFontMetrics().top;
+            mCanvas.drawText(name1, screenWidthText - textWidth1 - 20, screenHeightText - textHeight - 100, mPaint);
+            mCanvas.drawText(name2, screenWidthText - textWidth2 - 20, screenHeightText - textHeight - 20, mPaint);
+
             // Draw some text while paused
             if(mPaused){
 
                 // Set the size and color of the mPaint for the text
                 mPaint.setColor(Color.argb(255, 255, 255, 255));
-                mPaint.setTextSize(250);
+                mPaint.setTextSize(120);
 
                 // Draw the message
                 // We will give this an international upgrade soon
-                //mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
+                mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
                 mCanvas.drawText(getResources().
                                 getString(R.string.tap_to_play),
                         200, 700, mPaint);
             }
-
 
             // Unlock the mCanvas and reveal the graphics for this frame
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
